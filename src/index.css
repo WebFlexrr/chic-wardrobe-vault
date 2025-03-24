@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -107,10 +108,8 @@
     @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300;
   }
   
-  /* Add the group class separately */
-  .product-card {
-    @apply group;
-  }
+  /* Instead of using @apply with the group utility, we'll just add the class in the component */
+  /* The product-card class will have the group class added directly in the JSX */
   
   .product-card-image-container {
     @apply relative overflow-hidden aspect-[3/4];

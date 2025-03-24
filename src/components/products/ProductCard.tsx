@@ -34,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="product-card">
+    <Link to={`/product/${product.id}`} className="product-card group">
       {/* Badges */}
       {product.newArrival && (
         <div className="product-card-badge bg-brand-600">New</div>
