@@ -15,7 +15,7 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    image: '/lovable-uploads/10b76dac-4d78-496a-8549-7a7208b335ab.png',
+    image: '/lovable-uploads/368c930f-82a9-457b-b087-0512beb2ee18.png',
     title: 'FIND YOUR PERFECT STYLE',
     subtitle: 'Office attire with an edge for the modern professional',
     cta: 'Shop Now',
