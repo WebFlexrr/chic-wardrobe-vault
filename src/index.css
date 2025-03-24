@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -108,135 +107,72 @@
     @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300;
   }
   
+  /* Add the group class separately */
+  .product-card {
+    @apply group;
+  }
+  
   .product-card-image-container {
     @apply relative overflow-hidden aspect-[3/4];
   }
   
   .product-card-image {
-    @apply w-full h-full object-cover transform transition-transform duration-700;
-  }
-  
-  .product-card-content {
-    @apply p-4 bg-white;
-  }
-  
-  .product-card-badge {
-    @apply absolute top-2 left-2 px-2 py-1 text-xs font-medium bg-brand-600 text-white rounded-sm z-10;
-  }
-  
-  .btn-brand {
-    @apply bg-brand-600 hover:bg-brand-700 text-white font-medium px-6 py-2 rounded-md transition-colors duration-300;
-  }
-  
-  .category-filter {
-    @apply flex flex-wrap gap-2 p-4 bg-gray-50 rounded-md mb-6;
-  }
-  
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-700 to-brand-500;
-  }
-  
-  .story-link {
-    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-500 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+    @apply w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110;
   }
   
   .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+    @apply transition-transform transform hover:scale-105;
   }
   
-  .section-title {
-    @apply text-2xl md:text-3xl font-bold mb-6 relative inline-block;
+  .story-link {
+    @apply relative;
+    overflow: hidden;
+    display: inline-block;
   }
-  
-  .section-title::after {
+
+  .story-link::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-1/2 h-1 bg-brand-500 rounded-full;
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background-color: theme('colors.brand.600');
+    transition: left 0.3s ease-in-out;
+    z-index: 1;
+  }
+
+  .story-link:hover::after {
+    left: 0;
   }
 }
 
-/* Custom animations */
-.slide-up {
-  animation: slideUp 0.5s ease forwards;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@layer utilities {
+  .animate-slide-in {
+    animation: slide-in 0.3s forwards ease-in-out;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .animate-fade-in {
+    animation: fade-in 0.3s forwards ease-in-out;
   }
-}
 
-.fade-in-delay {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
-  animation-delay: 0.2s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+  @keyframes slide-in {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
-  to {
-    opacity: 1;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
-}
-
-/* Zoom hover effect */
-.zoom-img-container {
-  overflow: hidden;
-}
-
-.zoom-img {
-  transition: transform 0.5s ease;
-}
-
-.zoom-img:hover {
-  transform: scale(1.1);
-}
-
-/* Group modifications */
-.group:hover .group-hover\:scale-110 {
-  transform: scale(1.1);
-}
-
-.group:hover .group-hover\:bg-opacity-20 {
-  --tw-bg-opacity: 0.2;
-}
-
-.group:hover .group-hover\:opacity-100 {
-  opacity: 1;
-}
-
-.group:hover .group-hover\:translate-y-0 {
-  transform: translateY(0);
-}
-
-/* Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }

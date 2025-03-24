@@ -3,12 +3,12 @@ import React from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 const Cart = () => {
-  // This would normally be managed with a cart state, but for now we'll use placeholder data
-  const [cartItems, setCartItems] = React.useState([]);
+  // This would normally be managed with a cart state
+  const cartItems = [];
   const hasItems = cartItems.length > 0;
 
   return (
@@ -18,11 +18,9 @@ const Cart = () => {
         
         {!hasItems ? (
           <Card className="text-center p-8">
-            <CardHeader>
-              <CardTitle className="text-2xl">Your cart is empty</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ShoppingBag className="mx-auto mb-4 text-gray-400" size={64} />
+            <CardContent className="pt-6">
+              <ShoppingCart className="mx-auto mb-4 text-gray-400" size={64} />
+              <h2 className="text-2xl font-semibold mb-2">Your cart is empty</h2>
               <p className="text-gray-500 mb-6">
                 Looks like you haven't added any items to your cart yet.
               </p>
@@ -39,33 +37,34 @@ const Cart = () => {
               {/* Cart items would go here */}
               <p className="text-gray-500 text-center py-12">No items in cart yet</p>
             </div>
-            
-            <div className="lg:col-span-1">
+            <div>
               <Card>
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="border-t pt-4 flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>$0.00</span>
+                <CardContent className="pt-6">
+                  <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal</span>
+                      <span>$0.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span>$0.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tax</span>
+                      <span>$0.00</span>
+                    </div>
+                    <div className="border-t pt-2 mt-2">
+                      <div className="flex justify-between font-bold">
+                        <span>Total</span>
+                        <span>$0.00</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center">
-                    Proceed to Checkout <ArrowRight className="ml-2" size={16} />
+                  <Button asChild className="w-full bg-brand-600 hover:bg-brand-700">
+                    <Link to="/checkout">Proceed to Checkout</Link>
                   </Button>
                 </CardFooter>
               </Card>

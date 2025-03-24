@@ -2,11 +2,10 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CreditCard, Landmark, ShoppingBag } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 const Checkout = () => {
   return (
@@ -16,10 +15,9 @@ const Checkout = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* Shipping Address */}
             <Card>
               <CardHeader>
-                <CardTitle>Shipping Address</CardTitle>
+                <CardTitle>Shipping Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -46,83 +44,76 @@ const Checkout = () => {
                     <Input id="state" placeholder="State" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="zipCode">Zip Code</Label>
-                    <Input id="zipCode" placeholder="Zip Code" />
+                    <Label htmlFor="zip">ZIP Code</Label>
+                    <Input id="zip" placeholder="ZIP Code" />
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Payment Method */}
             <Card>
               <CardHeader>
                 <CardTitle>Payment Method</CardTitle>
               </CardHeader>
-              <CardContent>
-                <RadioGroup defaultValue="card">
-                  <div className="flex items-center space-x-2 border p-4 rounded-md">
-                    <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex items-center">
-                      <CreditCard className="mr-2" size={20} />
-                      Credit/Debit Card
-                    </Label>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cardNumber">Card Number</Label>
+                  <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="expiryDate">Expiry Date</Label>
+                    <Input id="expiryDate" placeholder="MM/YY" />
                   </div>
-                  <div className="flex items-center space-x-2 border p-4 rounded-md mt-2">
-                    <RadioGroupItem value="bank" id="bank" />
-                    <Label htmlFor="bank" className="flex items-center">
-                      <Landmark className="mr-2" size={20} />
-                      Bank Transfer
-                    </Label>
-                  </div>
-                </RadioGroup>
-                
-                <div className="mt-6 space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
+                    <Label htmlFor="cvv">CVV</Label>
+                    <Input id="cvv" placeholder="123" />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiryDate">Expiry Date</Label>
-                      <Input id="expiryDate" placeholder="MM/YY" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input id="cvv" placeholder="123" />
-                    </div>
-                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nameOnCard">Name on Card</Label>
+                  <Input id="nameOnCard" placeholder="Enter name as it appears on card" />
                 </div>
               </CardContent>
             </Card>
           </div>
           
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
+          <div>
             <Card>
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>$0.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>$0.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Tax</span>
-                  <span>$0.00</span>
-                </div>
-                <div className="border-t pt-4 flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>$0.00</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="border-t pt-2 mt-2">
+                    <div className="flex justify-between font-bold">
+                      <span>Total</span>
+                      <span>$0.00</span>
+                    </div>
+                  </div>
                 </div>
                 
-                <Button className="w-full mt-4 bg-brand-600 hover:bg-brand-700">
-                  Place Order
+                <Button className="w-full bg-brand-600 hover:bg-brand-700 mt-4">
+                  Complete Purchase
                 </Button>
+                
+                <div className="text-center text-sm text-gray-500 mt-4">
+                  <Link to="/cart" className="text-brand-600 hover:underline">
+                    Return to Cart
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
