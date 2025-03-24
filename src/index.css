@@ -105,7 +105,7 @@
   }
   
   .product-card {
-    @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group;
+    @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .product-card-image-container {
@@ -113,7 +113,7 @@
   }
   
   .product-card-image {
-    @apply w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110;
+    @apply w-full h-full object-cover transform transition-transform duration-700;
   }
   
   .product-card-content {
@@ -196,6 +196,23 @@
 
 .zoom-img:hover {
   transform: scale(1.1);
+}
+
+/* Group modifications */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+.group:hover .group-hover\:bg-opacity-20 {
+  --tw-bg-opacity: 0.2;
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+.group:hover .group-hover\:translate-y-0 {
+  transform: translateY(0);
 }
 
 /* Glassmorphism */
