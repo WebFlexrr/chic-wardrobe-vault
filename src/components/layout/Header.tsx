@@ -1,29 +1,29 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Heart, User, Search, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { categories } from '@/data/products';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAppStore } from '@/store';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  const { search, setSearchOpen, setSearchQuery, cart } = useAppStore();
+  const { isSearchOpen } = search;
+  const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -35,11 +35,24 @@ const Header = () => {
     }
   };
 
+  const toggleSearch = () => {
+    setSearchOpen(!isSearchOpen);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Implement search functionality here
+    console.log('Search submitted:', search.searchQuery);
+    setSearchOpen(false);
+  };
+
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-2"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -88,17 +101,22 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            <Link to="/search" className="text-gray-800 hover:text-brand-600">
+            <button 
+              onClick={toggleSearch} 
+              className="text-gray-800 hover:text-brand-600"
+            >
               <Search size={20} />
-            </Link>
+            </button>
             <Link to="/wishlist" className="text-gray-800 hover:text-brand-600">
               <Heart size={20} />
             </Link>
             <Link to="/cart" className="text-gray-800 hover:text-brand-600 relative">
               <ShoppingBag size={20} />
-              <span className="absolute -top-2 -right-2 bg-brand-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                0
-              </span>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-brand-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
             </Link>
             <Link to="/account" className="text-gray-800 hover:text-brand-600">
               <User size={20} />
@@ -113,6 +131,35 @@ const Header = () => {
             </button>
           </div>
         </div>
+
+        {/* Search Bar */}
+        {isSearchOpen && (
+          <div className="absolute left-0 right-0 bg-white shadow-md mt-2 py-4 px-4 animate-fade-in">
+            <form onSubmit={handleSearchSubmit} className="max-w-lg mx-auto">
+              <div className="flex">
+                <Input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search for products..."
+                  className="flex-grow"
+                  value={search.searchQuery}
+                  onChange={handleSearchChange}
+                />
+                <Button type="submit" className="ml-2 bg-brand-600 hover:bg-brand-700">
+                  Search
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="ml-2" 
+                  onClick={() => setSearchOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Mobile Menu */}

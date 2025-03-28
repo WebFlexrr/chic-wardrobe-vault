@@ -11,6 +11,7 @@ interface ProductSectionProps {
   subtitle?: string;
   products: Product[];
   viewAllLink?: string;
+  bgColor?: string;
 }
 
 const ProductSection: React.FC<ProductSectionProps> = ({
@@ -18,9 +19,10 @@ const ProductSection: React.FC<ProductSectionProps> = ({
   subtitle,
   products,
   viewAllLink,
+  bgColor = 'bg-white',
 }) => {
   return (
-    <section className="py-20">
+    <section className={`py-24 ${bgColor}`}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
@@ -31,7 +33,7 @@ const ProductSection: React.FC<ProductSectionProps> = ({
           )}
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 md:gap-12">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

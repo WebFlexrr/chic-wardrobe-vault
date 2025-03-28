@@ -17,13 +17,12 @@ const Index = () => {
     <Layout>
       <HeroBanner />
       
-      <div className="py-8 bg-white"></div> {/* Spacer */}
-      
       <ProductSection
         title="New Arrivals"
         subtitle="Discover our latest styles for the season"
         products={newArrivals}
         viewAllLink="/all-products?filter=new-arrivals"
+        bgColor="bg-white"
       />
       
       <CategoriesSection />
@@ -33,6 +32,7 @@ const Index = () => {
         subtitle="Our most popular styles loved by customers"
         products={bestsellerProducts}
         viewAllLink="/all-products?filter=best-sellers"
+        bgColor="bg-gray-50"
       />
       
       <PromoSection />
