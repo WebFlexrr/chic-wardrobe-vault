@@ -17,6 +17,8 @@ const Index = () => {
     <Layout>
       <HeroBanner />
       
+      <div className="py-8 bg-white"></div> {/* Spacer */}
+      
       <ProductSection
         title="New Arrivals"
         subtitle="Discover our latest styles for the season"

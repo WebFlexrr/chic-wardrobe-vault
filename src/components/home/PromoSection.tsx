@@ -30,21 +30,21 @@ const PromoSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="py-24 bg-cover bg-center relative"
-      style={{ backgroundImage: "url('/assets/promo-bg.jpg')" }}
+      className="py-28 bg-cover bg-center relative"
+      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')" }}
     >
-      <div className="absolute inset-0 bg-brand-900/70"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-900/80 to-purple-900/70"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-2xl mx-auto text-center text-white">
           <h2 
-            className={`text-3xl md:text-4xl font-bold mb-4 transition-all duration-700 transform ${
+            className={`text-3xl md:text-5xl font-bold mb-6 transition-all duration-700 transform ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}
           >
             Autumn Is Coming
           </h2>
           <p 
-            className={`text-lg mb-8 max-w-xl mx-auto transition-all duration-700 delay-300 transform ${
+            className={`text-lg md:text-xl mb-10 max-w-xl mx-auto transition-all duration-700 delay-300 transform ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}
           >

@@ -22,14 +22,14 @@ const slides: Slide[] = [
     link: '/category/dresses'
   },
   {
-    image: '/assets/hero-2.jpg',
+    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80',
     title: 'AUTUMN COLLECTION',
     subtitle: 'Discover our new arrivals for the season',
     cta: 'Explore',
     link: '/category/outerwear'
   },
   {
-    image: '/assets/hero-3.jpg',
+    image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80',
     title: 'ELEGANCE REDEFINED',
     subtitle: 'Timeless pieces for the sophisticated woman',
     cta: 'View Collection',
@@ -92,7 +92,7 @@ const HeroBanner = () => {
           <div className="hero-overlay"></div>
           <div className="hero-content">
             <div 
-              className={`max-w-2xl transition-all duration-1000 ease-out ${
+              className={`max-w-2xl text-center md:text-left transition-all duration-1000 ease-out ${
                 index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
             >
