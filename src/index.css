@@ -90,8 +90,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-montserrat;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair font-medium;
   }
 }
 
@@ -107,9 +111,6 @@
   .product-card {
     @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300;
   }
-  
-  /* Instead of using @apply with the group utility, we'll just add the class in the component */
-  /* The product-card class will have the group class added directly in the JSX */
   
   .product-card-image-container {
     @apply relative overflow-hidden aspect-[3/4];
@@ -143,6 +144,18 @@
 
   .story-link:hover::after {
     left: 0;
+  }
+  
+  .category-filter-chip {
+    @apply px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200;
+  }
+  
+  .category-filter-chip.active {
+    @apply bg-black text-white border-black;
+  }
+  
+  .category-filter-chip:not(.active) {
+    @apply bg-white text-gray-700 border-gray-300 hover:border-gray-500;
   }
 }
 
