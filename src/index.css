@@ -117,7 +117,11 @@
   }
   
   .product-card-image {
-    @apply w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110;
+    @apply w-full h-full object-cover transition-all duration-700;
+  }
+  
+  .product-card-badge {
+    @apply absolute top-2 left-2 z-10 px-2 py-1 text-xs text-white rounded;
   }
   
   .hover-scale {

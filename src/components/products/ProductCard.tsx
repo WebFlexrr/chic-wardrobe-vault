@@ -12,6 +12,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { toast } = useToast();
+  const mainImage = product.images && product.images.length > 0 
+    ? product.images[0] 
+    : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600';
+  const hoverImage = product.images && product.images.length > 1 
+    ? product.images[1] 
+    : mainImage;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -37,10 +43,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <Link to={`/product/${product.id}`} className="product-card group">
       {/* Badges */}
       {product.newArrival && (
-        <div className="product-card-badge bg-brand-600">New</div>
+        <div className="absolute top-2 left-2 z-10 bg-brand-600 text-white px-2 py-1 text-xs rounded">New</div>
       )}
       {product.originalPrice && product.originalPrice > product.price && (
-        <div className="product-card-badge bg-red-500 left-auto right-2">
+        <div className="absolute top-2 right-2 z-10 bg-red-500 text-white px-2 py-1 text-xs rounded">
           {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
         </div>
       )}
@@ -48,9 +54,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image */}
       <div className="product-card-image-container">
         <img 
-          src={product.images[0]} 
+          src={mainImage} 
           alt={product.name} 
-          className="product-card-image"
+          className="product-card-image transition-opacity duration-300 group-hover:opacity-0"
+        />
+        <img
+          src={hoverImage}
+          alt={`${product.name} - alternate view`}
+          className="product-card-image absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         />
         
         {/* Hover overlay with buttons */}
@@ -77,7 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       
       {/* Content */}
-      <div className="product-card-content">
+      <div className="p-4">
         <h3 className="font-medium text-gray-800 mb-1 transition-colors group-hover:text-brand-600">{product.name}</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

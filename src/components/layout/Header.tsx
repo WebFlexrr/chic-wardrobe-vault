@@ -9,7 +9,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useAppStore } from '@/store';
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
@@ -52,7 +51,7 @@ const Header = () => {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-2"
+      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -62,7 +61,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-800 hover:text-brand-600 font-medium">
               Home
             </Link>
@@ -80,7 +79,7 @@ const Header = () => {
                   {category.name}
                 </Link>
                 {category.subcategories && activeCategory === category.id && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden z-50 animate-fade-in py-2">
+                  <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50 animate-fade-in py-3">
                     {category.subcategories.map((subcategory) => (
                       <Link
                         key={subcategory.id}
@@ -100,25 +99,26 @@ const Header = () => {
           </nav>
 
           {/* Icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-5">
             <button 
               onClick={toggleSearch} 
               className="text-gray-800 hover:text-brand-600"
+              aria-label="Search"
             >
               <Search size={20} />
             </button>
-            <Link to="/wishlist" className="text-gray-800 hover:text-brand-600">
+            <Link to="/wishlist" className="text-gray-800 hover:text-brand-600" aria-label="Wishlist">
               <Heart size={20} />
             </Link>
-            <Link to="/cart" className="text-gray-800 hover:text-brand-600 relative">
+            <Link to="/cart" className="text-gray-800 hover:text-brand-600 relative" aria-label="Cart">
               <ShoppingBag size={20} />
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-brand-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-brand-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartItemCount}
                 </span>
               )}
             </Link>
-            <Link to="/account" className="text-gray-800 hover:text-brand-600">
+            <Link to="/account" className="text-gray-800 hover:text-brand-600" aria-label="Account">
               <User size={20} />
             </Link>
 
@@ -126,6 +126,7 @@ const Header = () => {
             <button 
               className="md:hidden text-gray-800 focus:outline-none" 
               onClick={toggleMobileMenu}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -135,7 +136,7 @@ const Header = () => {
         {/* Search Bar */}
         {isSearchOpen && (
           <div className="absolute left-0 right-0 bg-white shadow-md mt-2 py-4 px-4 animate-fade-in">
-            <form onSubmit={handleSearchSubmit} className="max-w-lg mx-auto">
+            <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto">
               <div className="flex">
                 <Input
                   ref={searchInputRef}
