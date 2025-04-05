@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { getProductById } from '@/data/products';
 import { Product } from '@/types';
