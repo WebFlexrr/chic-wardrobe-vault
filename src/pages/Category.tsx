@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/products/ProductCard';
 import { Button } from '@/components/ui/button';
@@ -92,16 +92,19 @@ const Category = () => {
       <div className="bg-white py-6 border-b">
         <div className="container mx-auto px-4">
           <div className="flex overflow-x-auto pb-2 space-x-3 no-scrollbar">
-            <button className="category-filter-chip active whitespace-nowrap">
+           <Link to={`/category/${category.slug}`}> <button  className="category-filter-chip active whitespace-nowrap">
               All {category?.name || 'Products'}
             </button>
+            </Link>
+            
             {displaySubcategories.map((subcat) => (
-              <button 
-                key={subcat.id} 
+               <Link key={subcat.id}  to={`/category/${category.slug}/${subcat.slug}`}><button 
+                
                 className={`category-filter-chip whitespace-nowrap ${subcategorySlug === subcat.slug ? 'active' : ''}`}
               >
                 {subcat.name}
               </button>
+              </Link>
             ))}
           </div>
         </div>
