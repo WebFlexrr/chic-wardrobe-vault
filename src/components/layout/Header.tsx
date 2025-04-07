@@ -28,6 +28,12 @@ const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const handleCategoryClick = (categoryId: string) => {
+    if (!isMobile) {
+      setActiveCategory(activeCategory === categoryId ? null : categoryId);
+    }
+  };
+
   const handleCategoryHover = (categoryId: string) => {
     if (!isMobile) {
       setActiveCategory(categoryId);
@@ -56,36 +62,39 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-brand-600">
-            {/* CHIC<span className="text-brand-800">VAULT</span> */}
-            <img src={"/logo.png"} width={80}  />
+          <Link to="/" className="text-2xl font-bold text-primary-600">
+            <img src={"/logo.png"} alt="Logo" width={80} />
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-800 hover:text-brand-600 font-medium">
+            <Link to="/" className="text-gray-800 hover:text-primary-600 font-medium">
               Home
             </Link>
             {categories.map((category) => (
               <div 
                 key={category.id} 
                 className="relative group"
+                onClick={() => handleCategoryClick(category.id)}
                 onMouseEnter={() => handleCategoryHover(category.id)}
-                onMouseLeave={() => setActiveCategory(null)}
+                onMouseLeave={() => isMobile ? null : setActiveCategory(null)}
               >
                 <Link 
                   to={`/category/${category.slug}`} 
-                  className="text-gray-800 hover:text-brand-600 font-medium"
+                  className="text-gray-800 hover:text-primary-600 font-medium"
                 >
                   {category.name}
                 </Link>
                 {category.subcategories && activeCategory === category.id && (
-                  <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50 animate-fade-in py-3">
+                  <div 
+                    className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50 animate-fade-in py-3"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {category.subcategories.map((subcategory) => (
                       <Link
                         key={subcategory.id}
                         to={`/category/${category.slug}/${subcategory.slug}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-600"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600"
                       >
                         {subcategory.name}
                       </Link>
@@ -94,7 +103,7 @@ const Header = () => {
                 )}
               </div>
             ))}
-            <Link to="/all-products" className="text-gray-800 hover:text-brand-600 font-medium">
+            <Link to="/all-products" className="text-gray-800 hover:text-primary-600 font-medium">
               All Products
             </Link>
           </nav>
@@ -103,23 +112,23 @@ const Header = () => {
           <div className="flex items-center space-x-5">
             <button 
               onClick={toggleSearch} 
-              className="text-gray-800 hover:text-brand-600"
+              className="text-gray-800 hover:text-primary-600"
               aria-label="Search"
             >
               <Search size={20} />
             </button>
-            <Link to="/wishlist" className="text-gray-800 hover:text-brand-600" aria-label="Wishlist">
+            <Link to="/wishlist" className="text-gray-800 hover:text-primary-600" aria-label="Wishlist">
               <Heart size={20} />
             </Link>
-            <Link to="/cart" className="text-gray-800 hover:text-brand-600 relative" aria-label="Cart">
+            <Link to="/cart" className="text-gray-800 hover:text-primary-600 relative" aria-label="Cart">
               <ShoppingBag size={20} />
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-brand-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartItemCount}
                 </span>
               )}
             </Link>
-            <Link to="/account" className="text-gray-800 hover:text-brand-600" aria-label="Account">
+            <Link to="/account" className="text-gray-800 hover:text-primary-600" aria-label="Account">
               <User size={20} />
             </Link>
 
@@ -147,7 +156,7 @@ const Header = () => {
                   value={search.searchQuery}
                   onChange={handleSearchChange}
                 />
-                <Button type="submit" className="ml-2 bg-brand-600 hover:bg-brand-700">
+                <Button type="submit" className="ml-2 bg-primary-600 hover:bg-primary-700">
                   Search
                 </Button>
                 <Button 
@@ -171,7 +180,7 @@ const Header = () => {
             <nav className="flex flex-col space-y-4">
               <Link 
                 to="/" 
-                className="text-gray-800 hover:text-brand-600 font-medium py-2 border-b"
+                className="text-gray-800 hover:text-primary-600 font-medium py-2 border-b"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
@@ -184,7 +193,7 @@ const Header = () => {
                   >
                     <Link 
                       to={`/category/${category.slug}`} 
-                      className="text-gray-800 hover:text-brand-600 font-medium"
+                      className="text-gray-800 hover:text-primary-600 font-medium"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {category.name}
@@ -199,7 +208,7 @@ const Header = () => {
                         <Link
                           key={subcategory.id}
                           to={`/category/${category.slug}/${subcategory.slug}`}
-                          className="text-sm text-gray-700 hover:text-brand-600"
+                          className="text-sm text-gray-700 hover:text-primary-600"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {subcategory.name}
@@ -211,28 +220,28 @@ const Header = () => {
               ))}
               <Link 
                 to="/all-products" 
-                className="text-gray-800 hover:text-brand-600 font-medium py-2 border-b"
+                className="text-gray-800 hover:text-primary-600 font-medium py-2 border-b"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 All Products
               </Link>
               <Link 
                 to="/account" 
-                className="text-gray-800 hover:text-brand-600 font-medium py-2 border-b"
+                className="text-gray-800 hover:text-primary-600 font-medium py-2 border-b"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 My Account
               </Link>
               <Link 
                 to="/wishlist" 
-                className="text-gray-800 hover:text-brand-600 font-medium py-2 border-b"
+                className="text-gray-800 hover:text-primary-600 font-medium py-2 border-b"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Wishlist
               </Link>
               <Link 
                 to="/cart" 
-                className="text-gray-800 hover:text-brand-600 font-medium py-2 border-b"
+                className="text-gray-800 hover:text-primary-600 font-medium py-2 border-b"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Cart

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/products/ProductCard';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,9 @@ import { Separator } from '@/components/ui/separator';
 
 const Category = () => {
   const { categorySlug, subcategorySlug } = useParams<{ categorySlug: string; subcategorySlug?: string }>();
+  const navigate = useNavigate();
   const [products, setProducts] = useState(getProductsByCategory(categorySlug || ''));
+  const [filteredProducts, setFilteredProducts] = useState(products);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [sortOrder, setSortOrder] = useState('featured');
@@ -28,6 +30,38 @@ const Category = () => {
   
   const category = categories.find(cat => cat.slug === categorySlug);
   const subcategory = category?.subcategories?.find(sub => sub.slug === subcategorySlug);
+  
+  // Initial products load and filtering when params change
+  useEffect(() => {
+    const newProducts = getProductsByCategory(categorySlug || '');
+    setProducts(newProducts);
+    
+    // Filter by subcategory if provided
+    if (subcategorySlug && category) {
+      const subcategoryProducts = newProducts.filter(product => 
+        product.subcategory?.toLowerCase() === subcategorySlug.toLowerCase()
+      );
+      setFilteredProducts(subcategoryProducts);
+    } else {
+      setFilteredProducts(newProducts);
+    }
+  }, [categorySlug, subcategorySlug, category]);
+  
+  // Apply price range filter
+  useEffect(() => {
+    const filtered = products.filter(product => {
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      
+      // If subcategory is selected, filter by it too
+      if (subcategorySlug) {
+        return matchesPrice && product.subcategory?.toLowerCase() === subcategorySlug.toLowerCase();
+      }
+      
+      return matchesPrice;
+    });
+    
+    setFilteredProducts(filtered);
+  }, [priceRange, products, subcategorySlug]);
   
   // Simulated subcategories if they don't exist in the data
   const displaySubcategories = category?.subcategories || [
@@ -41,20 +75,29 @@ const Category = () => {
     setShowFilters(!showFilters);
   };
 
+  const handleCategoryClick = (subSlug: string) => {
+    if (subSlug === subcategorySlug) {
+      // If clicking on the currently active subcategory, clear the filter
+      navigate(`/category/${categorySlug}`);
+    } else {
+      navigate(`/category/${categorySlug}/${subSlug}`);
+    }
+  };
+
   const applyFilters = () => {
-    // Filter logic would go here
+    // Already applied through useEffect
     setShowFilters(false);
   };
 
   return (
     <Layout>
       {/* Breadcrumb */}
-      <div className="bg-gray-50 py-3">
+      <div className="bg-gray-50 py-3 mt-20">
         <div className="container mx-auto px-4">
           <div className="flex items-center text-sm text-gray-600">
-            <a href="/" className="hover:text-brand-700">Home</a>
+            <Link to="/" className="hover:text-primary-700">Home</Link>
             <ChevronRight size={14} className="mx-2" />
-            <a href="/all-products" className="hover:text-brand-700">All Products</a>
+            <Link to="/all-products" className="hover:text-primary-700">All Products</Link>
             {category && (
               <>
                 <ChevronRight size={14} className="mx-2" />
@@ -92,19 +135,21 @@ const Category = () => {
       <div className="bg-white py-6 border-b">
         <div className="container mx-auto px-4">
           <div className="flex overflow-x-auto pb-2 space-x-3 no-scrollbar">
-           <Link to={`/category/${category.slug}`}> <button  className="category-filter-chip active whitespace-nowrap">
+            <button  
+              className={`category-filter-chip whitespace-nowrap ${!subcategorySlug ? 'active' : ''}`}
+              onClick={() => navigate(`/category/${categorySlug}`)}
+            >
               All {category?.name || 'Products'}
             </button>
-            </Link>
             
             {displaySubcategories.map((subcat) => (
-               <Link key={subcat.id}  to={`/category/${category.slug}/${subcat.slug}`}><button 
-                
+              <button 
+                key={subcat.id}
+                onClick={() => handleCategoryClick(subcat.slug)}
                 className={`category-filter-chip whitespace-nowrap ${subcategorySlug === subcat.slug ? 'active' : ''}`}
               >
                 {subcat.name}
               </button>
-              </Link>
             ))}
           </div>
         </div>
@@ -127,7 +172,7 @@ const Category = () => {
                       max={500}
                       step={10}
                       value={priceRange}
-                      onValueChange={setPriceRange}
+                      onValueChange={(value) => setPriceRange(value)}
                       className="mb-6"
                     />
                     <div className="flex justify-between mt-2 text-sm text-gray-600">
@@ -175,7 +220,7 @@ const Category = () => {
                     {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
                       <div 
                         key={size}
-                        className="border border-gray-300 rounded-md text-center py-2 cursor-pointer hover:border-black hover:bg-black hover:text-white transition-all duration-200"
+                        className="border border-gray-300 rounded-md text-center py-2 cursor-pointer hover:border-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-200"
                       >
                         {size}
                       </div>
@@ -185,7 +230,7 @@ const Category = () => {
               </Card>
               
               {/* Apply Button */}
-              <Button className="w-full bg-black hover:bg-gray-800 text-white">
+              <Button className="w-full bg-primary-600 hover:bg-primary-700 text-white" onClick={applyFilters}>
                 Apply Filters
               </Button>
             </div>
@@ -223,7 +268,7 @@ const Category = () => {
                 <div className="flex items-center">
                   <span className="text-sm text-gray-600 mr-2 hidden sm:inline">Sort by:</span>
                   <select 
-                    className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                   >
@@ -236,7 +281,7 @@ const Category = () => {
               </div>
             </div>
             
-            <p className="text-sm text-gray-500 mb-6">Showing {products.length} results</p>
+            <p className="text-sm text-gray-500 mb-6">Showing {filteredProducts.length} results</p>
             
             {/* Product grid */}
             <div className={`
@@ -244,23 +289,41 @@ const Category = () => {
                 ? 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'
                 : 'space-y-6'}
             `}>
-              {products.map((product) => (
-                <div key={product.id} className={viewMode === 'list' ? 'border-b pb-6' : ''}>
-                  <ProductCard key={product.id} product={product} />
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <div key={product.id} className={viewMode === 'list' ? 'border-b pb-6' : ''}>
+                    <ProductCard product={product} />
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-lg text-gray-500">No products found matching your criteria.</p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-4"
+                    onClick={() => {
+                      setPriceRange([0, 200]);
+                      navigate(`/category/${categorySlug}`);
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
                 </div>
-              ))}
+              )}
             </div>
             
             {/* Pagination */}
-            <div className="flex justify-center mt-12">
-              <div className="flex gap-2">
-                <Button variant="outline" className="px-4 text-gray-700 border-gray-300">Prev</Button>
-                <Button className="bg-black hover:bg-gray-800 px-4">1</Button>
-                <Button variant="outline" className="px-4 text-gray-700 border-gray-300">2</Button>
-                <Button variant="outline" className="px-4 text-gray-700 border-gray-300">3</Button>
-                <Button variant="outline" className="px-4 text-gray-700 border-gray-300">Next</Button>
+            {filteredProducts.length > 0 && (
+              <div className="flex justify-center mt-12">
+                <div className="flex gap-2">
+                  <Button variant="outline" className="px-4 text-gray-700 border-gray-300">Prev</Button>
+                  <Button className="bg-primary-600 hover:bg-primary-700 px-4">1</Button>
+                  <Button variant="outline" className="px-4 text-gray-700 border-gray-300">2</Button>
+                  <Button variant="outline" className="px-4 text-gray-700 border-gray-300">3</Button>
+                  <Button variant="outline" className="px-4 text-gray-700 border-gray-300">Next</Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -285,7 +348,7 @@ const Category = () => {
                   max={500}
                   step={10}
                   value={priceRange}
-                  onValueChange={setPriceRange}
+                  onValueChange={(value) => setPriceRange(value)}
                 />
                 <div className="flex justify-between mt-2 text-sm text-gray-600">
                   <span>${priceRange[0]}</span>
@@ -332,7 +395,7 @@ const Category = () => {
                 {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
                   <div 
                     key={size}
-                    className="border border-gray-300 rounded-md text-center py-2 cursor-pointer hover:border-black hover:bg-black hover:text-white transition-all duration-200"
+                    className="border border-gray-300 rounded-md text-center py-2 cursor-pointer hover:border-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-200"
                   >
                     {size}
                   </div>
@@ -351,7 +414,7 @@ const Category = () => {
                 Cancel
               </Button>
               <Button 
-                className="flex-1 bg-black hover:bg-gray-800"
+                className="flex-1 bg-primary-600 hover:bg-primary-700"
                 onClick={applyFilters}
               >
                 Apply
