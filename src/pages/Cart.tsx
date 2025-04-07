@@ -11,8 +11,28 @@ import { useAppStore } from '@/store';
 import { toast } from 'sonner';
 
 const Cart = () => {
-  // Use the cart state from the Zustand store instead of demo data
-  const { cart, removeFromCart, updateCartItemQuantity } = useAppStore();
+  // Modified: Add some fake items to the cart
+  const { cart, removeFromCart, updateCartItemQuantity, addToCart } = useAppStore();
+  
+  // Add demo products if cart is empty
+  React.useEffect(() => {
+    if (cart.length === 0) {
+      // Add fake products for demonstration
+      addToCart({
+        productId: "p3",
+        quantity: 1,
+        color: "Black",
+        size: "M"
+      });
+      
+      addToCart({
+        productId: "p7",
+        quantity: 2,
+        color: "Blue",
+        size: "L"
+      });
+    }
+  }, []);
   
   const hasItems = cart.length > 0;
   

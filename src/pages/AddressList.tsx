@@ -1,14 +1,61 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Plus, Edit, Trash } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Sample address data
+const sampleAddresses = [
+  {
+    id: 1,
+    name: "Home",
+    street: "123 Main Street",
+    city: "San Francisco",
+    state: "CA",
+    zipCode: "94105",
+    country: "United States",
+    default: true
+  },
+  {
+    id: 2,
+    name: "Office",
+    street: "456 Market Street, Suite 300",
+    city: "San Francisco",
+    state: "CA",
+    zipCode: "94103",
+    country: "United States",
+    default: false
+  },
+  {
+    id: 3,
+    name: "Parents' Home",
+    street: "789 Oak Drive",
+    city: "Los Angeles",
+    state: "CA",
+    zipCode: "90001",
+    country: "United States",
+    default: false
+  }
+];
 
 const AddressList = () => {
-  // Mock data - in a real app this would come from your API or state management
-  const addresses = [];
+  const [addresses, setAddresses] = useState(sampleAddresses);
+  
+  const handleDeleteAddress = (id: number) => {
+    setAddresses(addresses.filter(address => address.id !== id));
+    toast.success("Address deleted successfully");
+  };
+  
+  const handleSetDefault = (id: number) => {
+    setAddresses(addresses.map(address => ({
+      ...address,
+      default: address.id === id
+    })));
+    toast.success("Default address updated");
+  };
   
   return (
     <Layout>
@@ -21,7 +68,7 @@ const AddressList = () => {
         </div>
         
         <div className="mb-6">
-          <Button className="bg-brand-600 hover:bg-brand-700">
+          <Button className="bg-primary-600 hover:bg-primary-700">
             <Plus className="mr-2" size={16} />
             Add New Address
           </Button>
@@ -45,7 +92,7 @@ const AddressList = () => {
                   <CardTitle className="flex justify-between items-center">
                     <span>{address.name}</span>
                     {address.default && (
-                      <span className="bg-brand-50 text-brand-600 text-xs px-2 py-1 rounded-full">
+                      <span className="bg-primary-50 text-primary-600 text-xs px-2 py-1 rounded-full">
                         Default
                       </span>
                     )}
@@ -65,11 +112,27 @@ const AddressList = () => {
                       <Edit className="mr-1" size={14} />
                       Edit
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1 text-destructive">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 text-destructive"
+                      onClick={() => handleDeleteAddress(address.id)}
+                    >
                       <Trash className="mr-1" size={14} />
                       Delete
                     </Button>
                   </div>
+                  
+                  {!address.default && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full mt-2 text-primary-600"
+                      onClick={() => handleSetDefault(address.id)}
+                    >
+                      Set as default
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}

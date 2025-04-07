@@ -7,10 +7,11 @@ import { Heart, ShoppingBag, X } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useAppStore } from '@/store';
 import { getProductById } from '@/data/products';
+import { toast } from 'sonner';
 
 const Wishlist = () => {
-  // For demo purposes, we'll add demo wishlist items
-  const demoWishlistItems = [
+  // Fake wishlist items with IDs from products.ts
+  const wishlistItems = [
     {
       productId: "p1", // Matches IDs from data/products.ts
       addedAt: new Date()
@@ -22,10 +23,22 @@ const Wishlist = () => {
     {
       productId: "p7",
       addedAt: new Date()
+    },
+    {
+      productId: "p5",
+      addedAt: new Date()
+    },
+    {
+      productId: "p10",
+      addedAt: new Date()
+    },
+    {
+      productId: "p3",
+      addedAt: new Date()
     }
   ];
   
-  const hasItems = demoWishlistItems.length > 0;
+  const hasItems = wishlistItems.length > 0;
   const { addToCart } = useAppStore();
 
   const handleAddToCart = (productId: string) => {
@@ -35,11 +48,12 @@ const Wishlist = () => {
       color: 'default',
       size: 'M'
     });
+    toast.success("Added to cart");
   };
 
   const handleRemoveFromWishlist = (productId: string) => {
     // This would remove from wishlist - demo only
-    console.log('Removing from wishlist:', productId);
+    toast.success("Removed from wishlist");
   };
 
   return (
@@ -64,7 +78,7 @@ const Wishlist = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {demoWishlistItems.map((item) => {
+            {wishlistItems.map((item) => {
               const product = getProductById(item.productId);
               if (!product) return null;
               

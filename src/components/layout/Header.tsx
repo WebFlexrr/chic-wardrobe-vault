@@ -7,15 +7,27 @@ import { Input } from '@/components/ui/input';
 import { categories } from '@/data/products';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAppStore } from '@/store';
+import { getProductById } from '@/data/products';
+
+// Sample products for search suggestions
+const sampleProducts = [
+  { id: 'p1', name: 'Classic White T-Shirt' },
+  { id: 'p2', name: 'Black Denim Jeans' },
+  { id: 'p3', name: 'Summer Floral Dress' },
+  { id: 'p7', name: 'Leather Jacket' },
+  { id: 'p5', name: 'Pleated Midi Skirt' },
+];
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [searchSuggestions, setSearchSuggestions] = useState<Array<{ id: string; name: string }>>([]);
   const isMobile = useIsMobile();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   
   const { search, setSearchOpen, setSearchQuery, cart } = useAppStore();
-  const { isSearchOpen } = search;
+  const { isSearchOpen, searchQuery } = search;
   const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   useEffect(() => {
@@ -23,6 +35,32 @@ const Header = () => {
       searchInputRef.current.focus();
     }
   }, [isSearchOpen]);
+
+  useEffect(() => {
+    // Filter products based on search query
+    if (searchQuery && searchQuery.length > 1) {
+      const filtered = sampleProducts.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setSearchSuggestions(filtered);
+    } else {
+      setSearchSuggestions([]);
+    }
+  }, [searchQuery]);
+
+  // Close search suggestions on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setSearchSuggestions([]);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -42,6 +80,11 @@ const Header = () => {
 
   const toggleSearch = () => {
     setSearchOpen(!isSearchOpen);
+    if (!isSearchOpen) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,6 +96,12 @@ const Header = () => {
     // Implement search functionality here
     console.log('Search submitted:', search.searchQuery);
     setSearchOpen(false);
+    setSearchSuggestions([]);
+  };
+
+  const handleSuggestionClick = (productId: string) => {
+    setSearchOpen(false);
+    setSearchSuggestions([]);
   };
 
   return (
@@ -145,8 +194,11 @@ const Header = () => {
 
         {/* Search Bar */}
         {isSearchOpen && (
-          <div className="absolute left-0 right-0 bg-white shadow-md mt-2 py-4 px-4 animate-fade-in">
-            <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto">
+          <div 
+            ref={searchContainerRef}
+            className="absolute left-0 right-0 bg-white shadow-md mt-2 py-4 px-4 animate-fade-in z-50"
+          >
+            <form onSubmit={handleSearchSubmit} className="max-w-xl mx-auto relative">
               <div className="flex">
                 <Input
                   ref={searchInputRef}
@@ -168,6 +220,38 @@ const Header = () => {
                   Cancel
                 </Button>
               </div>
+              
+              {/* Search suggestions */}
+              {searchSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-md mt-1 z-50 max-h-72 overflow-y-auto">
+                  <div className="py-2">
+                    {searchSuggestions.map(product => (
+                      <Link 
+                        key={product.id} 
+                        to={`/product/${product.id}`}
+                        className="flex items-center px-4 py-2 hover:bg-gray-50"
+                        onClick={() => handleSuggestionClick(product.id)}
+                      >
+                        <div className="w-10 h-10 bg-gray-100 mr-3 rounded overflow-hidden">
+                          {getProductById(product.id)?.images[0] && (
+                            <img 
+                              src={getProductById(product.id)?.images[0]} 
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{product.name}</p>
+                          <p className="text-xs text-gray-500">
+                            ${getProductById(product.id)?.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </form>
           </div>
         )}
@@ -175,7 +259,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 animate-slide-in">
+        <div className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 animate-slide-in z-50">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-4">
               <Link 

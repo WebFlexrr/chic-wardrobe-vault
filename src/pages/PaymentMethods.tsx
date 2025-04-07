@@ -1,14 +1,58 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, CreditCard, Edit, Trash } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Sample payment method data
+const samplePaymentMethods = [
+  {
+    id: 1,
+    cardType: "Visa",
+    last4: "4242",
+    expiryMonth: "04",
+    expiryYear: "26",
+    cardholderName: "John Doe",
+    default: true
+  },
+  {
+    id: 2,
+    cardType: "Mastercard",
+    last4: "5555",
+    expiryMonth: "08",
+    expiryYear: "25",
+    cardholderName: "John Doe",
+    default: false
+  },
+  {
+    id: 3,
+    cardType: "American Express",
+    last4: "1234",
+    expiryMonth: "12",
+    expiryYear: "27",
+    cardholderName: "John Doe",
+    default: false
+  }
+];
 
 const PaymentMethods = () => {
-  // Mock data - in a real app this would come from your API or state management
-  const paymentMethods = [];
+  const [paymentMethods, setPaymentMethods] = useState(samplePaymentMethods);
+  
+  const handleDeletePaymentMethod = (id: number) => {
+    setPaymentMethods(paymentMethods.filter(method => method.id !== id));
+    toast.success("Payment method deleted successfully");
+  };
+  
+  const handleSetDefault = (id: number) => {
+    setPaymentMethods(paymentMethods.map(method => ({
+      ...method,
+      default: method.id === id
+    })));
+    toast.success("Default payment method updated");
+  };
   
   return (
     <Layout>
@@ -21,7 +65,7 @@ const PaymentMethods = () => {
         </div>
         
         <div className="mb-6">
-          <Button className="bg-brand-600 hover:bg-brand-700">
+          <Button className="bg-primary-600 hover:bg-primary-700">
             <Plus className="mr-2" size={16} />
             Add Payment Method
           </Button>
@@ -45,7 +89,7 @@ const PaymentMethods = () => {
                   <CardTitle className="flex justify-between items-center">
                     <span>{method.cardType}</span>
                     {method.default && (
-                      <span className="bg-brand-50 text-brand-600 text-xs px-2 py-1 rounded-full">
+                      <span className="bg-primary-50 text-primary-600 text-xs px-2 py-1 rounded-full">
                         Default
                       </span>
                     )}
@@ -58,6 +102,9 @@ const PaymentMethods = () => {
                       <span>•••• •••• •••• {method.last4}</span>
                     </div>
                     <p className="text-sm text-gray-500">
+                      {method.cardholderName}
+                    </p>
+                    <p className="text-sm text-gray-500">
                       Expires: {method.expiryMonth}/{method.expiryYear}
                     </p>
                   </div>
@@ -67,11 +114,27 @@ const PaymentMethods = () => {
                       <Edit className="mr-1" size={14} />
                       Edit
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1 text-destructive">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 text-destructive"
+                      onClick={() => handleDeletePaymentMethod(method.id)}
+                    >
                       <Trash className="mr-1" size={14} />
                       Delete
                     </Button>
                   </div>
+                  
+                  {!method.default && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full mt-2 text-primary-600"
+                      onClick={() => handleSetDefault(method.id)}
+                    >
+                      Set as default
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
