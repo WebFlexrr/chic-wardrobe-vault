@@ -7,44 +7,37 @@ import { ShoppingCart, X, Minus, Plus } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { getProductById } from '@/data/products';
 import { Separator } from '@/components/ui/separator';
+import { useAppStore } from '@/store';
+import { toast } from 'sonner';
 
 const Cart = () => {
-  // Demo cart items
-  const demoCartItems = [
-    {
-      productId: "p3",
-      quantity: 1,
-      color: "Black",
-      size: "M"
-    },
-    {
-      productId: "p5",
-      quantity: 2,
-      color: "White",
-      size: "S"
-    }
-  ];
+  // Use the cart state from the Zustand store instead of demo data
+  const { cart, removeFromCart, updateCartItemQuantity } = useAppStore();
   
-  const hasItems = demoCartItems.length > 0;
+  const hasItems = cart.length > 0;
   
   const handleRemoveItem = (productId: string) => {
-    console.log('Remove item:', productId);
+    removeFromCart(productId);
+    toast.success("Item removed from cart");
   };
   
   const handleQuantityChange = (productId: string, newQuantity: number) => {
-    console.log('Update quantity:', { productId, newQuantity });
+    if (newQuantity > 0) {
+      updateCartItemQuantity(productId, newQuantity);
+    }
   };
   
   const calculateSubtotal = () => {
-    return demoCartItems.reduce((total, item) => {
+    return cart.reduce((total, item) => {
       const product = getProductById(item.productId);
       return total + (product?.price || 0) * item.quantity;
     }, 0);
   };
   
+  const subtotal = calculateSubtotal();
   const shipping = 0; // Free shipping
-  const tax = calculateSubtotal() * 0.1; // 10% tax
-  const total = calculateSubtotal() + shipping + tax;
+  const tax = subtotal * 0.1; // 10% tax
+  const total = subtotal + shipping + tax;
 
   return (
     <Layout>
@@ -71,7 +64,7 @@ const Cart = () => {
             <div className="lg:col-span-2">
               <Card>
                 <CardContent className="pt-6">
-                  {demoCartItems.map((item) => {
+                  {cart.map((item) => {
                     const product = getProductById(item.productId);
                     if (!product) return null;
                     
@@ -144,7 +137,7 @@ const Cart = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>${calculateSubtotal().toFixed(2)}</span>
+                      <span>${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Shipping</span>
