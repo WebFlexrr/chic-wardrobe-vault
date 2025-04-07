@@ -27,17 +27,17 @@ const Cart = () => {
     }
   };
   
-  const calculateSubtotal = () => {
+  const calculateSubtotal = (): number => {
     return cart.reduce((total, item) => {
       const product = getProductById(item.productId);
       return total + (product?.price || 0) * item.quantity;
     }, 0);
   };
   
-  const subtotal = calculateSubtotal();
-  const shipping = 0; // Free shipping
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + shipping + tax;
+  const subtotal: number = calculateSubtotal();
+  const shipping: number = 0; // Free shipping
+  const tax: number = subtotal * 0.1; // 10% tax
+  const total: number = subtotal + shipping + tax;
 
   return (
     <Layout>
