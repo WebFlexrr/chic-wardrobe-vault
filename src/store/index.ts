@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { getProductById } from '@/data/products';
 import { Product } from '@/types';
@@ -31,6 +32,7 @@ interface AppState {
   addToWishlist: (productId: string) => void;
   removeFromWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
+  clearWishlist: () => void;
   
   // Search State
   search: SearchState;
@@ -85,6 +87,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   isInWishlist: (productId) => {
     return get().wishlist.some(item => item.productId === productId);
   },
+  clearWishlist: () => set({ wishlist: [] }),
   
   // Search State
   search: {

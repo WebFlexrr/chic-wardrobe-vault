@@ -8,51 +8,35 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useAppStore } from '@/store';
 import { getProductById } from '@/data/products';
 import { toast } from 'sonner';
+import { useProductActions } from '@/hooks/use-product-actions';
 
 const Wishlist = () => {
-  // Fake wishlist items with IDs from products.ts
-  const wishlistItems = [
-    {
-      productId: "p1", // Matches IDs from data/products.ts
-      addedAt: new Date()
-    },
-    {
-      productId: "p2", 
-      addedAt: new Date()
-    },
-    {
-      productId: "p7",
-      addedAt: new Date()
-    },
-    {
-      productId: "p5",
-      addedAt: new Date()
-    },
-    {
-      productId: "p10",
-      addedAt: new Date()
-    },
-    {
-      productId: "p3",
-      addedAt: new Date()
-    }
-  ];
+  const { wishlist, removeFromWishlist } = useAppStore();
+  const { handleQuickAddToCart } = useProductActions();
   
-  const hasItems = wishlistItems.length > 0;
-  const { addToCart } = useAppStore();
+  // Add sample items to wishlist if empty - for demonstration only
+  React.useEffect(() => {
+    const { wishlist, addToWishlist } = useAppStore.getState();
+    
+    if (wishlist.length === 0) {
+      // Add sample items
+      ["p1", "p2", "p7", "p5", "p10", "p3"].forEach(id => {
+        addToWishlist(id);
+      });
+    }
+  }, []);
+  
+  const hasItems = wishlist.length > 0;
 
   const handleAddToCart = (productId: string) => {
-    addToCart({
-      productId,
-      quantity: 1,
-      color: 'default',
-      size: 'M'
-    });
-    toast.success("Added to cart");
+    const product = getProductById(productId);
+    if (product) {
+      handleQuickAddToCart(product);
+    }
   };
 
   const handleRemoveFromWishlist = (productId: string) => {
-    // This would remove from wishlist - demo only
+    removeFromWishlist(productId);
     toast.success("Removed from wishlist");
   };
 
@@ -78,7 +62,7 @@ const Wishlist = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {wishlistItems.map((item) => {
+            {wishlist.map((item) => {
               const product = getProductById(item.productId);
               if (!product) return null;
               

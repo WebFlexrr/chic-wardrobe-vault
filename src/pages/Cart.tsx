@@ -11,11 +11,12 @@ import { useAppStore } from '@/store';
 import { toast } from 'sonner';
 
 const Cart = () => {
-  // Modified: Add some fake items to the cart
   const { cart, removeFromCart, updateCartItemQuantity, addToCart } = useAppStore();
   
   // Add demo products if cart is empty
   React.useEffect(() => {
+    const { cart, addToCart } = useAppStore.getState();
+    
     if (cart.length === 0) {
       // Add fake products for demonstration
       addToCart({
@@ -30,6 +31,13 @@ const Cart = () => {
         quantity: 2,
         color: "Blue",
         size: "L"
+      });
+
+      addToCart({
+        productId: "p1",
+        quantity: 1,
+        color: "White",
+        size: "S"
       });
     }
   }, []);
@@ -55,7 +63,7 @@ const Cart = () => {
   };
   
   const subtotal: number = calculateSubtotal();
-  const shipping: number = 0; // Free shipping
+  const shipping: number = subtotal > 100 ? 0 : 10; // Free shipping over $100
   const tax: number = subtotal * 0.1; // 10% tax
   const total: number = subtotal + shipping + tax;
 
