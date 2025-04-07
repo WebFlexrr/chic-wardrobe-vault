@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* About */}
           <div>
-            <h4 className="text-lg font-bold mb-4 text-white">About CHIC VAULT</h4>
+            <h4 className="text-lg font-bold mb-4 text-white">About Yolo Polo</h4>
             <p className="text-gray-400 mb-4">
               We curate high-quality fashion pieces for the modern professional woman, 
               focusing on elegance, comfort, and timeless style.
@@ -110,8 +110,8 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-4 text-white">Contact Info</h4>
             <ul className="space-y-2 text-gray-400">
               <li>123 Fashion Avenue, New York, NY 10001</li>
-              <li>Phone: +1 (555) 123-4567</li>
-              <li>Email: support@chicvault.com</li>
+              {/* <li>Phone: +1 (555) 123-4567</li> */}
+              {/* <li>Email: support@yolopolo.com</li> */}
               <li>Monday-Friday: 9:00 AM - 6:00 PM EST</li>
               <li>Saturday: 10:00 AM - 4:00 PM EST</li>
               <li>Sunday: Closed</li>
@@ -123,7 +123,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} CHIC VAULT. All rights reserved.
+              © {new Date().getFullYear()} Yolo Polo. All rights reserved.
             </p>
             <div className="flex items-center space-x-4">
               <span className="text-gray-400 text-sm">We Accept:</span>

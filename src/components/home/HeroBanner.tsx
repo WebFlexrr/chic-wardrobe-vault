@@ -15,26 +15,29 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    image: '/lovable-uploads/368c930f-82a9-457b-b087-0512beb2ee18.png',
-    title: 'FIND YOUR PERFECT STYLE',
-    subtitle: 'Office attire with an edge for the modern professional',
-    cta: 'Shop Now',
-    link: '/category/dresses'
+    image:
+      "https://images.unsplash.com/photo-1560949128-41260ae9e717?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80",
+    title: "FIND YOUR PERFECT STYLE",
+    subtitle: "Office attire with an edge for the modern professional",
+    cta: "Shop Now",
+    link: "/category/dresses",
   },
   {
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80',
-    title: 'AUTUMN COLLECTION',
-    subtitle: 'Discover our new arrivals for the season',
-    cta: 'Explore',
-    link: '/category/outerwear'
+    image:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80",
+    title: "AUTUMN COLLECTION",
+    subtitle: "Discover our new arrivals for the season",
+    cta: "Explore",
+    link: "/category/outerwear",
   },
   {
-    image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80',
-    title: 'ELEGANCE REDEFINED',
-    subtitle: 'Timeless pieces for the sophisticated woman',
-    cta: 'View Collection',
-    link: '/category/tops'
-  }
+    image:
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80",
+    title: "ELEGANCE REDEFINED",
+    subtitle: "Timeless pieces for the sophisticated woman",
+    cta: "View Collection",
+    link: "/category/tops",
+  },
 ];
 
 const HeroBanner = () => {
@@ -92,11 +95,11 @@ const HeroBanner = () => {
           <div className="hero-overlay"></div>
           <div className="hero-content">
             <div 
-              className={`max-w-2xl text-center md:text-left transition-all duration-1000 ease-out ${
+              className={`max-w-2xl text-center p-20 md:text-left transition-all duration-1000 ease-out ${
                 index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
             >
-              <h1 className="text-2xl md:text-5xl font-extrabold mb-4">
+              <h1 className="text-2xl md:text-5xl font-extrabold  mb-4">
                 {slide.title}
               </h1>
               <p className="text-lg md:text-2xl mb-8 max-w-lg">

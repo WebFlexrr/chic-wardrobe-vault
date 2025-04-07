@@ -95,7 +95,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair font-medium;
+    @apply  font-medium;
   }
 }
 
@@ -109,7 +109,7 @@
   }
   
   .product-card {
-    @apply relative rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all duration-300;
+    @apply relative rounded-md overflow-hidden shadow-md hover:shadow-xl transition-all duration-300;
   }
   
   .product-card-image-container {

@@ -1,11 +1,9 @@
-
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { categories } from '@/data/products';
 
 const CategoriesSection = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-gray-100">
+    <section className="py-20 bg-gradient-to-b from-yellow-100 to-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Shop By Category</h2>
