@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -11,36 +10,7 @@ import { useAppStore } from '@/store';
 import { toast } from 'sonner';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateCartItemQuantity, addToCart } = useAppStore();
-  
-  // Add demo products if cart is empty
-  React.useEffect(() => {
-    const { cart, addToCart } = useAppStore.getState();
-    
-    if (cart.length === 0) {
-      // Add fake products for demonstration
-      addToCart({
-        productId: "p3",
-        quantity: 1,
-        color: "Black",
-        size: "M"
-      });
-      
-      addToCart({
-        productId: "p7",
-        quantity: 2,
-        color: "Blue",
-        size: "L"
-      });
-
-      addToCart({
-        productId: "p1",
-        quantity: 1,
-        color: "White",
-        size: "S"
-      });
-    }
-  }, []);
+  const { cart, removeFromCart, updateCartItemQuantity } = useAppStore();
   
   const hasItems = cart.length > 0;
   

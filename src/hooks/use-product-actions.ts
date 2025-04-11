@@ -2,6 +2,7 @@
 import { useToast } from './use-toast';
 import { useAppStore } from '@/store';
 import { Product } from '@/types';
+import { toast } from 'sonner';
 
 export const useProductActions = () => {
   const { toast } = useToast();

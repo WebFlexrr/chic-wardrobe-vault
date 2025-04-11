@@ -7,16 +7,21 @@ import { Heart, Share2, ShoppingBag, ChevronRight, Star, Truck, RotateCcw, Shiel
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
+import { useAppStore } from '@/store';
+import { toast } from 'sonner';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
   const product = getProductById(id || '');
   const { toast } = useToast();
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useAppStore();
   
   const [selectedColor, setSelectedColor] = useState(product?.colors[0].name || '');
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] || '');
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(product?.images[0] || '');
+  
+  const productInWishlist = product ? isInWishlist(product.id) : false;
 
   if (!product) {
     return (
@@ -33,6 +38,13 @@ const Product = () => {
   }
 
   const handleAddToCart = () => {
+    addToCart({
+      productId: product.id,
+      quantity: quantity,
+      color: selectedColor,
+      size: selectedSize,
+    });
+    
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
@@ -40,10 +52,19 @@ const Product = () => {
   };
 
   const handleAddToWishlist = () => {
-    toast({
-      title: "Added to wishlist",
-      description: `${product.name} has been added to your wishlist.`,
-    });
+    if (productInWishlist) {
+      removeFromWishlist(product.id);
+      toast({
+        title: "Removed from wishlist",
+        description: `${product.name} has been removed from your wishlist.`,
+      });
+    } else {
+      addToWishlist(product.id);
+      toast({
+        title: "Added to wishlist",
+        description: `${product.name} has been added to your wishlist.`,
+      });
+    }
   };
 
   const increaseQuantity = () => {
