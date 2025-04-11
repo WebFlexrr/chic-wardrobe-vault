@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { InfoIcon } from 'lucide-react';
 
 interface LocationState {
   from?: string;
@@ -40,6 +42,11 @@ const Login = () => {
     }
   };
 
+  const setDemoCredentials = () => {
+    setEmail('demo@example.com');
+    setPassword('password');
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[70vh]">
@@ -52,6 +59,25 @@ const Login = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              <Alert className="bg-blue-50 border-blue-200">
+                <InfoIcon className="h-4 w-4 text-blue-500" />
+                <AlertDescription>
+                  <strong>Demo Credentials:</strong>
+                  <div className="mt-1">
+                    Email: <span className="font-mono">demo@example.com</span><br />
+                    Password: <span className="font-mono">password</span>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="p-0 text-blue-600 h-auto" 
+                    onClick={setDemoCredentials}
+                  >
+                    Use demo credentials
+                  </Button>
+                </AlertDescription>
+              </Alert>
+              
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input 
