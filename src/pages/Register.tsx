@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Register = () => {
   const [firstName, setFirstName] = useState('');
@@ -17,7 +17,9 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +37,12 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      // Simulate registration
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success("Registration successful! Please check your email to verify your account.");
-      navigate('/login');
-    } catch (error) {
-      toast.error("Registration failed. Please try again.");
+      const fullName = `${firstName} ${lastName}`.trim();
+      const success = await register(email, password, fullName);
+      
+      if (success) {
+        navigate('/account');
+      }
     } finally {
       setIsLoading(false);
     }

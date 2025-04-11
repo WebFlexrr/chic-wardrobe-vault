@@ -2,22 +2,26 @@
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { User, Package, CreditCard, MapPin, LogOut, Settings, Heart, Eye } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Account = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   
   const [profileData, setProfileData] = useState({
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
+    fullName: user?.name || 'John Doe',
+    email: user?.email || 'john.doe@example.com',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -47,6 +51,11 @@ const Account = () => {
       confirmPassword: profileData.confirmPassword
     });
     // Show success message or handle errors
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
   
   return (
@@ -119,6 +128,7 @@ const Account = () => {
                   </button>
                   
                   <button 
+                    onClick={handleLogout}
                     className="flex items-center px-4 py-3 text-left rounded-md hover:bg-gray-50 text-destructive transition-colors"
                   >
                     <LogOut className="mr-3" size={18} />

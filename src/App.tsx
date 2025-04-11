@@ -5,6 +5,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Product from "./pages/Product";
@@ -29,26 +31,48 @@ const App = () => {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/product/:id" element={<Product />} />
-            <Route path="/category/:categorySlug" element={<Category />} />
-            <Route path="/category/:categorySlug/:subcategorySlug" element={<Category />} />
-            <Route path="/all-products" element={<AllProducts />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account/orders" element={<OrderList />} />
-            <Route path="/account/orders/:id" element={<OrderDetails />} />
-            <Route path="/account/addresses" element={<AddressList />} />
-            <Route path="/account/payment-methods" element={<PaymentMethods />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/product/:id" element={<Product />} />
+              <Route path="/category/:categorySlug" element={<Category />} />
+              <Route path="/category/:categorySlug/:subcategorySlug" element={<Category />} />
+              <Route path="/all-products" element={<AllProducts />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/account" element={
+                <ProtectedRoute>
+                  <Account />
+                </ProtectedRoute>
+              } />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/account/orders" element={
+                <ProtectedRoute>
+                  <OrderList />
+                </ProtectedRoute>
+              } />
+              <Route path="/account/orders/:id" element={
+                <ProtectedRoute>
+                  <OrderDetails />
+                </ProtectedRoute>
+              } />
+              <Route path="/account/addresses" element={
+                <ProtectedRoute>
+                  <AddressList />
+                </ProtectedRoute>
+              } />
+              <Route path="/account/payment-methods" element={
+                <ProtectedRoute>
+                  <PaymentMethods />
+                </ProtectedRoute>
+              } />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </React.StrictMode>

@@ -1,36 +1,40 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface LocationState {
+  from?: string;
+}
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  
+  // Get the redirect path from location state (if any)
+  const locationState = location.state as LocationState;
+  const from = locationState?.from || '/account';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      // Simulate login
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Demo login - in a real app this would be authenticated against a backend
-      if (email === 'demo@example.com' && password === 'password') {
-        toast.success("Login successful!");
-        navigate('/account');
-      } else {
-        toast.error("Invalid credentials. Try demo@example.com / password");
+      const success = await login(email, password);
+      if (success) {
+        // Redirect to the page they were trying to access, or to account by default
+        navigate(from, { replace: true });
       }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Heart, User, Search, Menu, X } from 'lucide-react';
 import { useAppStore } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderIconsProps {
   onSearchToggle: () => void;
@@ -12,6 +13,8 @@ interface HeaderIconsProps {
 
 const HeaderIcons = ({ onSearchToggle, mobileMenuOpen, onMobileMenuToggle }: HeaderIconsProps) => {
   const { cart, wishlist } = useAppStore();
+  const { isAuthenticated } = useAuth();
+  
   const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
   const wishlistCount = wishlist.length;
 
@@ -40,7 +43,11 @@ const HeaderIcons = ({ onSearchToggle, mobileMenuOpen, onMobileMenuToggle }: Hea
           </span>
         )}
       </Link>
-      <Link to="/account" className="text-gray-800 hover:text-primary-600" aria-label="Account">
+      <Link 
+        to={isAuthenticated ? "/account" : "/login"} 
+        className="text-gray-800 hover:text-primary-600" 
+        aria-label={isAuthenticated ? "Account" : "Sign In"}
+      >
         <User size={20} />
       </Link>
 
