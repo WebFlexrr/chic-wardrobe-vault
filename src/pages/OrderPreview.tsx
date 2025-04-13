@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -171,10 +170,10 @@ const OrderPreview: React.FC = () => {
   
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 py-8 space-y-6"> {/* Added space-y-6 for consistent vertical spacing */}
+        <div className="max-w-4xl mx-auto space-y-6"> {/* Consistent vertical spacing */}
           {/* Header with Order Status */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-0">
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-2">
                 Order {order.orderNumber}
@@ -197,7 +196,7 @@ const OrderPreview: React.FC = () => {
           
           {/* Order Status Tracker */}
           {order.status !== 'cancelled' && (
-            <Card className="mb-8">
+            <Card className="mb-0"> {/* Reduced margin for tighter layout */}
               <CardContent className="pt-6">
                 <div className="relative">
                   <div className="flex justify-between mb-2">
@@ -285,9 +284,11 @@ const OrderPreview: React.FC = () => {
             </Card>
           )}
           
-          {/* Order Summary */}
+          {/* Order Summary Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
+            {/* Left Column: Order Items and Shipping/Billing Info */}
+            <div className="md:col-span-2 space-y-6"> {/* Added space-y-6 for vertical spacing between cards */}
+              {/* Order Items Card */}
               <Card>
                 <CardHeader>
                   <CardTitle>Order Items</CardTitle>
@@ -322,7 +323,7 @@ const OrderPreview: React.FC = () => {
               </Card>
               
               {/* Shipping and Billing Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>Shipping Address</CardTitle>
@@ -371,8 +372,9 @@ const OrderPreview: React.FC = () => {
               </div>
             </div>
             
-            {/* Order Summary */}
-            <div>
+            {/* Right Column: Order Summary */}
+            <div className="space-y-6"> {/* Added space-y-6 for vertical spacing */}
+              {/* Order Summary Card */}
               <Card>
                 <CardHeader>
                   <CardTitle>Order Summary</CardTitle>
@@ -417,7 +419,8 @@ const OrderPreview: React.FC = () => {
                 </CardContent>
               </Card>
               
-              <div className="mt-6">
+              {/* Continue Shopping Link */}
+              <div>
                 <Button variant="link" asChild className="flex items-center p-0">
                   <Link to="/all-products">
                     <ChevronRight className="mr-1 h-4 w-4 rotate-180" />
