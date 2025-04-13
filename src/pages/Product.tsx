@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getProductById } from '@/data/products';
@@ -10,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAppStore } from '@/store';
 import { toast } from 'sonner';
 import SizeGuideModal from '@/components/products/SizeGuideModal';
+import ProductImageZoom from '@/components/products/ProductImageZoom';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -111,15 +111,12 @@ const Product = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Product Images */}
+          {/* Product Images with Zoom effect */}
           <div className="space-y-4">
-            <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-              <img 
-                src={mainImage} 
-                alt={product.name} 
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              />
-            </div>
+            <ProductImageZoom 
+              src={mainImage} 
+              alt={product.name}
+            />
             <div className="grid grid-cols-4 gap-2">
               {product.images.map((image, index) => (
                 <div 
@@ -266,7 +263,7 @@ const Product = () => {
                 onClick={handleAddToWishlist}
               >
                 <Heart size={18} className="mr-2" />
-                Add to Wishlist
+                {productInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </Button>
             </div>
             

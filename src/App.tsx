@@ -20,6 +20,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OrderList from "./pages/OrderList";
 import OrderDetails from "./pages/OrderDetails";
+import OrderPreview from "./pages/OrderPreview";
 import AddressList from "./pages/AddressList";
 import PaymentMethods from "./pages/PaymentMethods";
 import SizeGuide from "./pages/SizeGuide";
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/size-guide" element={<SizeGuide />} />
+              <Route path="/order-preview/:id" element={<OrderPreview />} />
               <Route path="/account" element={
                 <ProtectedRoute>
                   <Account />
