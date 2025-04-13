@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
 import { useAppStore } from '@/store';
 import { toast } from 'sonner';
+import SizeGuideModal from '@/components/products/SizeGuideModal';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +21,7 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] || '');
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(product?.images[0] || '');
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   
   const productInWishlist = product ? isInWishlist(product.id) : false;
 
@@ -200,7 +202,10 @@ const Product = () => {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-sm font-medium text-gray-700">Sizes</h3>
-                <button className="text-sm text-brand-600 hover:text-brand-700">
+                <button 
+                  className="text-sm text-brand-600 hover:text-brand-700"
+                  onClick={() => setSizeGuideOpen(true)}
+                >
                   Size Guide
                 </button>
               </div>
@@ -386,6 +391,13 @@ const Product = () => {
           </Tabs>
         </div>
       </div>
+
+      {/* Size Guide Modal */}
+      <SizeGuideModal 
+        open={sizeGuideOpen} 
+        onOpenChange={setSizeGuideOpen} 
+        productCategory={product.category}
+      />
     </Layout>
   );
 };

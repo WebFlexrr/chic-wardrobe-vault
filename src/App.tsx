@@ -22,6 +22,7 @@ import OrderList from "./pages/OrderList";
 import OrderDetails from "./pages/OrderDetails";
 import AddressList from "./pages/AddressList";
 import PaymentMethods from "./pages/PaymentMethods";
+import SizeGuide from "./pages/SizeGuide";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/size-guide" element={<SizeGuide />} />
               <Route path="/account" element={
                 <ProtectedRoute>
                   <Account />
