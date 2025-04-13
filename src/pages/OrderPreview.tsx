@@ -3,8 +3,10 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Circle, X, ChevronRight } from 'lucide-react';
+import { Check, Circle, X, ChevronRight, Package, CreditCard, Calendar, Truck, Receipt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { useAppStore } from '@/store';
 import { getProductById } from '@/data/products';
 import { OrderStatus, PaymentStatus, Order } from '@/types';
@@ -168,35 +170,114 @@ const OrderPreview: React.FC = () => {
     return order.status !== 'cancelled' && order.status !== 'delivered';
   };
   
+  // Get status badge color
+  const getStatusBadge = (status: OrderStatus) => {
+    switch (status) {
+      case 'delivered':
+        return <Badge className="bg-green-500">Delivered</Badge>;
+      case 'shipped':
+        return <Badge className="bg-blue-500">Shipped</Badge>;
+      case 'processing':
+        return <Badge className="bg-yellow-500">Processing</Badge>;
+      case 'pending':
+        return <Badge className="bg-orange-500">Pending</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  // Get payment status badge
+  const getPaymentBadge = (status: PaymentStatus) => {
+    switch (status) {
+      case 'paid':
+        return <Badge className="bg-green-500">Paid</Badge>;
+      case 'pending':
+        return <Badge className="bg-yellow-500">Pending</Badge>;
+      case 'failed':
+        return <Badge variant="destructive">Failed</Badge>;
+      case 'refunded':
+        return <Badge className="bg-blue-500">Refunded</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+  
+  // Format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+  
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 space-y-6"> {/* Added space-y-6 for consistent vertical spacing */}
-        <div className="max-w-4xl mx-auto space-y-6"> {/* Consistent vertical spacing */}
-          {/* Header with Order Status */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-0">
-            <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                Order {order.orderNumber}
-                {order.status === 'cancelled' && (
-                  <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded">Cancelled</span>
-                )}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Placed on {new Date(order.createdAt).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </p>
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Order Header with Summary */}
+          <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold">Order {order.orderNumber}</h1>
+                  {getStatusBadge(order.status)}
+                </div>
+                <p className="text-gray-600 mt-1">
+                  Placed on {formatDate(order.createdAt)}
+                </p>
+              </div>
+              <Button variant="outline" asChild className="mt-4 md:mt-0">
+                <Link to="/account/orders">View All Orders</Link>
+              </Button>
             </div>
-            <Button variant="outline" asChild className="mt-4 md:mt-0">
-              <Link to="/account/orders">View All Orders</Link>
-            </Button>
+            
+            {/* Order Status Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2">
+              <div className="flex flex-col items-center md:items-start gap-1 p-4 rounded-md bg-gray-50">
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Receipt className="h-5 w-5" />
+                  <span className="text-sm">Order Status</span>
+                </div>
+                <span className="font-medium">{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+              </div>
+              
+              <div className="flex flex-col items-center md:items-start gap-1 p-4 rounded-md bg-gray-50">
+                <div className="flex items-center gap-2 text-gray-500">
+                  <CreditCard className="h-5 w-5" />
+                  <span className="text-sm">Payment</span>
+                </div>
+                <span className="font-medium">{getPaymentBadge(order.paymentStatus)}</span>
+              </div>
+              
+              <div className="flex flex-col items-center md:items-start gap-1 p-4 rounded-md bg-gray-50">
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Calendar className="h-5 w-5" />
+                  <span className="text-sm">Order Date</span>
+                </div>
+                <span className="font-medium">{formatDate(order.createdAt)}</span>
+              </div>
+              
+              {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                <div className="flex flex-col items-center md:items-start gap-1 p-4 rounded-md bg-gray-50">
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Truck className="h-5 w-5" />
+                    <span className="text-sm">Expected Delivery</span>
+                  </div>
+                  <span className="font-medium">{formatDate(order.estimatedDelivery || '')}</span>
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Order Status Tracker */}
           {order.status !== 'cancelled' && (
-            <Card className="mb-0"> {/* Reduced margin for tighter layout */}
+            <Card className="mb-6">
+              <CardHeader className="pb-0">
+                <CardTitle className="text-xl">Order Progress</CardTitle>
+              </CardHeader>
               <CardContent className="pt-6">
                 <div className="relative">
                   <div className="flex justify-between mb-2">
@@ -263,70 +344,94 @@ const OrderPreview: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Estimated Delivery */}
-                {shouldShowEstimatedDelivery() && (
-                  <div className="mt-6 text-center">
-                    <p className="text-gray-600">
-                      Estimated delivery by <span className="font-medium">{new Date(order.estimatedDelivery).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}</span>
-                    </p>
-                    {order.trackingNumber && (
-                      <p className="text-sm mt-2">
-                        Tracking Number: <span className="font-medium">{order.trackingNumber}</span>
-                      </p>
-                    )}
+                {/* Tracking Info */}
+                {shouldShowEstimatedDelivery() && order.trackingNumber && (
+                  <div className="mt-6 text-center bg-gray-50 p-4 rounded-md">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Tracking Number:</p>
+                        <p className="font-medium">{order.trackingNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Estimated Delivery:</p>
+                        <p className="font-medium">{formatDate(order.estimatedDelivery || '')}</p>
+                      </div>
+                      <Button size="sm">Track Package</Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
           )}
           
-          {/* Order Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Left Column: Order Items and Shipping/Billing Info */}
-            <div className="md:col-span-2 space-y-6"> {/* Added space-y-6 for vertical spacing between cards */}
-              {/* Order Items Card */}
+          {/* Main 2-Column Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column (2/3 width) */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Order Items Card with Enhanced Details */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Order Items</CardTitle>
+                <CardHeader className="border-b">
+                  <CardTitle className="text-xl">Order Items ({order.items.reduce((count, item) => count + item.quantity, 0)})</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ul className="divide-y">
-                    {order.items.map((item) => (
-                      <li key={`${item.productId}-${item.color}-${item.size}`} className="py-4 flex gap-4">
-                        <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-                          <img 
-                            src={item.image} 
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium">{item.name}</h3>
-                          <p className="text-sm text-gray-500">
-                            {item.color} / {item.size}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Qty: {item.quantity}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Details</TableHead>
+                        <TableHead className="text-right">Price</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {order.items.map((item) => (
+                        <TableRow key={`${item.productId}-${item.color}-${item.size}`}>
+                          <TableCell>
+                            <div className="flex gap-3">
+                              <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
+                                <img 
+                                  src={item.image} 
+                                  alt={item.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="flex flex-col">
+                                <h3 className="font-medium">{item.name}</h3>
+                                <p className="text-sm text-gray-500">SKU: {item.productId.substring(0, 8)}</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <p className="text-sm">
+                                <span className="text-gray-500">Color:</span> {item.color}
+                              </p>
+                              <p className="text-sm">
+                                <span className="text-gray-500">Size:</span> {item.size}
+                              </p>
+                              <p className="text-sm">
+                                <span className="text-gray-500">Qty:</span> {item.quantity}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <p className="font-medium">${item.price.toFixed(2)}</p>
+                            <p className="text-sm text-gray-500">Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
               
-              {/* Shipping and Billing Info */}
+              {/* Shipping and Payment Info Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Shipping Address</CardTitle>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Truck className="h-5 w-5" />
+                      Shipping Address
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <address className="not-italic">
@@ -341,80 +446,117 @@ const OrderPreview: React.FC = () => {
                 </Card>
                 
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Payment Information</CardTitle>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <CreditCard className="h-5 w-5" />
+                      Payment Information
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="font-medium">
-                      {order.paymentMethod.type === 'credit_card' ? 'Credit Card' : 
-                       order.paymentMethod.type === 'paypal' ? 'PayPal' : 
-                       'Online Payment'}
-                    </p>
-                    
-                    {order.paymentMethod.type === 'credit_card' && (
-                      <p className="text-gray-600">{order.paymentMethod.cardNumber}</p>
-                    )}
-                    
-                    <div className="mt-4">
-                      <p className="text-sm">Payment Status</p>
-                      <p className={`font-medium ${
-                        order.paymentStatus === 'paid' ? 'text-green-600' : 
-                        order.paymentStatus === 'pending' ? 'text-yellow-600' : 
-                        'text-red-600'
-                      }`}>
-                        {order.paymentStatus === 'paid' ? 'Paid' : 
-                         order.paymentStatus === 'pending' ? 'Pending' : 
-                         'Failed'}
-                      </p>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="font-medium text-base">Payment Method</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {order.paymentMethod.type === 'credit_card' ? (
+                            <>
+                              <CreditCard className="h-4 w-4" />
+                              <span>Credit Card ending in {order.paymentMethod.cardNumber?.slice(-4)}</span>
+                            </>
+                          ) : (
+                            order.paymentMethod.type.charAt(0).toUpperCase() + order.paymentMethod.type.slice(1).replace('_', ' ')
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <p className="font-medium text-base">Billing Address</p>
+                        <address className="not-italic mt-1 text-sm">
+                          {order.billingAddress.firstName} {order.billingAddress.lastName}<br />
+                          {order.billingAddress.addressLine1}<br />
+                          {order.billingAddress.city}, {order.billingAddress.state} {order.billingAddress.postalCode}
+                        </address>
+                      </div>
+                      
+                      <div>
+                        <p className="font-medium text-base">Payment Status</p>
+                        <div className="mt-1">
+                          {getPaymentBadge(order.paymentStatus)}
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             </div>
             
-            {/* Right Column: Order Summary */}
-            <div className="space-y-6"> {/* Added space-y-6 for vertical spacing */}
+            {/* Right Column (1/3 width) - Order Summary */}
+            <div className="space-y-6">
               {/* Order Summary Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
+              <Card className="sticky top-6">
+                <CardHeader className="border-b">
+                  <CardTitle className="text-xl">Order Summary</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Subtotal</span>
+                <CardContent className="pt-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Subtotal ({order.items.reduce((count, item) => count + item.quantity, 0)} items)</span>
                       <span>${order.subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Shipping</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Shipping</span>
                       <span>{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tax</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Tax</span>
                       <span>${order.tax.toFixed(2)}</span>
                     </div>
                     {order.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
+                      <div className="flex justify-between text-green-600 text-sm">
                         <span>Discount</span>
                         <span>-${order.discount.toFixed(2)}</span>
                       </div>
                     )}
-                    <Separator className="my-2" />
-                    <div className="flex justify-between font-bold text-lg">
+                    <Separator className="my-3" />
+                    <div className="flex justify-between font-medium text-base">
                       <span>Total</span>
                       <span>${order.total.toFixed(2)}</span>
                     </div>
                   </div>
                   
                   {/* Actions */}
-                  <div className="mt-6 space-y-4">
-                    <Button className="w-full">Track Order</Button>
-                    <Button variant="outline" className="w-full">Download Invoice</Button>
+                  <div className="mt-6 space-y-3">
+                    {shouldShowEstimatedDelivery() && (
+                      <Button className="w-full flex items-center justify-center gap-2">
+                        <Truck className="h-4 w-4" />
+                        Track Order
+                      </Button>
+                    )}
+                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                      <Receipt className="h-4 w-4" />
+                      Download Invoice
+                    </Button>
                     {canCancelOrder() && (
                       <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">
                         Cancel Order
                       </Button>
                     )}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Need Help Card */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Need Help?</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-sm">Have questions about your order?</p>
+                    <Button variant="link" className="p-0 h-auto text-primary">Contact Customer Support</Button>
+                  </div>
+                  <div>
+                    <p className="text-sm">Want to return an item?</p>
+                    <Button variant="link" className="p-0 h-auto text-primary">Start Return Process</Button>
                   </div>
                 </CardContent>
               </Card>
