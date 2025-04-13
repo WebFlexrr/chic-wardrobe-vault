@@ -255,7 +255,7 @@ const OrderPreview: React.FC = () => {
                 </div>
                 
                 {/* Estimated Delivery */}
-                {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                {(order.status !== 'delivered' && order.status !== 'cancelled') && (
                   <div className="mt-6 text-center">
                     <p className="text-gray-600">
                       Estimated delivery by <span className="font-medium">{new Date(order.estimatedDelivery).toLocaleDateString('en-US', { 
@@ -398,7 +398,7 @@ const OrderPreview: React.FC = () => {
                   <div className="mt-6 space-y-4">
                     <Button className="w-full">Track Order</Button>
                     <Button variant="outline" className="w-full">Download Invoice</Button>
-                    {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                    {(order.status !== 'cancelled' && order.status !== 'delivered') && (
                       <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">
                         Cancel Order
                       </Button>
