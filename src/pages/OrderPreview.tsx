@@ -159,6 +159,16 @@ const OrderPreview: React.FC = () => {
     }
   };
   
+  // Helper function to check if order status is not one of the specified values
+  const shouldShowEstimatedDelivery = () => {
+    return order.status !== 'delivered' && order.status !== 'cancelled';
+  };
+  
+  // Helper function to check if order can be canceled
+  const canCancelOrder = () => {
+    return order.status !== 'cancelled' && order.status !== 'delivered';
+  };
+  
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -255,7 +265,7 @@ const OrderPreview: React.FC = () => {
                 </div>
                 
                 {/* Estimated Delivery */}
-                {(order.status !== 'delivered' && order.status !== 'cancelled') && (
+                {shouldShowEstimatedDelivery() && (
                   <div className="mt-6 text-center">
                     <p className="text-gray-600">
                       Estimated delivery by <span className="font-medium">{new Date(order.estimatedDelivery).toLocaleDateString('en-US', { 
@@ -398,7 +408,7 @@ const OrderPreview: React.FC = () => {
                   <div className="mt-6 space-y-4">
                     <Button className="w-full">Track Order</Button>
                     <Button variant="outline" className="w-full">Download Invoice</Button>
-                    {(order.status !== 'cancelled' && order.status !== 'delivered') && (
+                    {canCancelOrder() && (
                       <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">
                         Cancel Order
                       </Button>
